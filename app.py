@@ -1,8 +1,8 @@
 import streamlit as st
 import openai
 import PyPDF2
-from langchain.embeddings import OpenAIEmbeddings  # Importação atualizada
-from langchain.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
 import tempfile
@@ -63,7 +63,7 @@ if uploaded_files:
 
         # Criar embeddings
         embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-        vector_store = FAISS.from_texts(chunks, embeddings)
+        vector_store = Chroma.from_texts(chunks, embeddings)
 
     st.success("PDFs processados e indexados com sucesso!")
 
