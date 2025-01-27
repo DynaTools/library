@@ -1,7 +1,7 @@
 import streamlit as st
 import openai
 import PyPDF2
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.embeddings import OpenAIEmbeddings  # Importação atualizada
 from langchain.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
@@ -29,7 +29,9 @@ def extract_text_from_pdf(file):
     reader = PyPDF2.PdfReader(file)
     text = ""
     for page in reader.pages:
-        text += page.extract_text()
+        extracted_text = page.extract_text()
+        if extracted_text:
+            text += extracted_text
     return text
 
 # Upload de PDFs
@@ -46,6 +48,10 @@ if uploaded_files:
             text = extract_text_from_pdf(tmp_file_path)
             all_texts += text
             os.unlink(tmp_file_path)  # Remove o arquivo temporário
+
+        if not all_texts.strip():
+            st.error("Nenhum texto foi extraído dos PDFs carregados.")
+            st.stop()
 
         # Dividir o texto em pedaços
         text_splitter = RecursiveCharacterTextSplitter(
